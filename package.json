@@ -1,0 +1,41 @@
+{
+  "name": "sales-system",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "db:import": "node scripts/import-houjin.mjs",
+    "db:import-osm": "node scripts/import-osm-phone.mjs",
+    "db:import-gbizinfo": "node scripts/import-gbizinfo.mjs",
+    "db:migrate-call-count": "node scripts/migrate-call-count.mjs",
+    "db:migrate-perf": "node scripts/migrate-perf.mjs",
+    "db:migrate-auth": "node scripts/migrate-auth.mjs",
+    "db:create-user": "node scripts/create-user.mjs",
+    "db:normalize-industry": "node scripts/normalize-industry.mjs"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "csv-parse": "^6.2.1",
+    "iconv-lite": "^0.7.2",
+    "jose": "^6.2.3",
+    "mysql2": "^3.22.5",
+    "next": "16.2.6",
+    "osm-pbf-parser": "^2.3.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
