@@ -17,7 +17,7 @@
 
 import fs from 'node:fs'
 import process from 'node:process'
-import mysql from 'mysql2/promise'
+import { createDbPool } from './db-pool.mjs'
 import { parse } from 'csv-parse'
 import iconv from 'iconv-lite'
 
@@ -71,16 +71,7 @@ async function main() {
     ? new Set(prefectures.split(',').map((s) => s.trim()))
     : KANSAI
 
-  const db = await mysql.createPool({
-    host: process.env.DB_HOST || '127.0.0.1',
-    port: Number(process.env.DB_PORT || 3306),
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'sales_system',
-    charset: 'utf8mb4',
-    waitForConnections: true,
-    connectionLimit: 5,
-  })
+  const db = createDbPool({ connectionLimit: 5 })
 
   let readStream = fs.createReadStream(file)
   if (encoding === 'utf8') {

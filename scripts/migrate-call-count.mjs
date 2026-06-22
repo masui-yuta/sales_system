@@ -1,15 +1,7 @@
 // 架電回数を companies.call_count に保持して一覧を高速化（1回だけ実行）
-import mysql from 'mysql2/promise'
+import { createDbPool } from './db-pool.mjs'
 
-const db = await mysql.createPool({
-  host: process.env.DB_HOST || '127.0.0.1',
-  port: Number(process.env.DB_PORT || 3306),
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'sales_system',
-  charset: 'utf8mb4',
-  connectionLimit: 1,
-})
+const db = createDbPool({ connectionLimit: 1 })
 
 try {
   console.log('call_count 列を追加中…')

@@ -14,7 +14,8 @@
     "db:migrate-perf": "node scripts/migrate-perf.mjs",
     "db:migrate-auth": "node scripts/migrate-auth.mjs",
     "db:create-user": "node scripts/create-user.mjs",
-    "db:normalize-industry": "node scripts/normalize-industry.mjs"
+    "db:normalize-industry": "node scripts/normalize-industry.mjs",
+    "db:setup-remote": "node scripts/setup-remote-db.mjs"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

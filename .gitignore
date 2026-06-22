@@ -39,6 +39,7 @@ yarn-error.log*
 # large import data (keep locally, do not commit)
 /data/*.csv
 /data/*.pbf
+/data/*.log
 
 # vercel
 .vercel

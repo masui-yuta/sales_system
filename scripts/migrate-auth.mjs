@@ -1,15 +1,7 @@
 // 認証テーブル作成（1回だけ実行）
-import mysql from 'mysql2/promise'
+import { createDbPool } from './db-pool.mjs'
 
-const db = await mysql.createPool({
-  host: process.env.DB_HOST || '127.0.0.1',
-  port: Number(process.env.DB_PORT || 3306),
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'sales_system',
-  charset: 'utf8mb4',
-  connectionLimit: 1,
-})
+const db = createDbPool({ connectionLimit: 1 })
 
 const statements = [
   `CREATE TABLE IF NOT EXISTS users (

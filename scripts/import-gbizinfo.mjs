@@ -17,7 +17,7 @@
 
 import fs from 'node:fs'
 import process from 'node:process'
-import mysql from 'mysql2/promise'
+import { createDbPool } from './db-pool.mjs'
 import { parse } from 'csv-parse'
 import iconv from 'iconv-lite'
 import {
@@ -186,20 +186,6 @@ function extractCorporateNumber(record) {
   }
 
   return null
-}
-
-async function createDbPool() {
-  // CSV取込は1接続で完結させる（TEMPORARY TABLE は接続ごとに別物のため pool 直叩きは不可）
-  return mysql.createPool({
-    host: process.env.DB_HOST || '127.0.0.1',
-    port: Number(process.env.DB_PORT || 3306),
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'sales_system',
-    charset: 'utf8mb4',
-    waitForConnections: true,
-    connectionLimit: 1,
-  })
 }
 
 async function ensureIndustryColumn(conn) {
@@ -518,7 +504,7 @@ API（差分・少量向け。42万件全件は数日かかるため非推奨）
     process.exit(1)
   }
 
-  const pool = await createDbPool()
+  const pool = createDbPool({ connectionLimit: 1 })
   const conn = await pool.getConnection()
 
   try {

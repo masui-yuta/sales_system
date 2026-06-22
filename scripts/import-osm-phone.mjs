@@ -21,7 +21,7 @@ import process from 'node:process'
 import { Writable } from 'node:stream'
 import { finished } from 'node:stream/promises'
 import osmParser from 'osm-pbf-parser'
-import mysql from 'mysql2/promise'
+import { createDbPool } from './db-pool.mjs'
 
 const CORPORATE_FORMS =
   /(株式会社|有限会社|合同会社|合資会社|合名会社|一般社団法人|一般財団法人|公益社団法人|公益財団法人|特定非営利活動法人|社会福祉法人|医療法人社団|医療法人財団|医療法人|学校法人|宗教法人|独立行政法人|地方独立行政法人|国立大学法人)/g
@@ -71,16 +71,7 @@ async function main() {
     process.exit(1)
   }
 
-  const db = await mysql.createPool({
-    host: process.env.DB_HOST || '127.0.0.1',
-    port: Number(process.env.DB_PORT || 3306),
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'sales_system',
-    charset: 'utf8mb4',
-    waitForConnections: true,
-    connectionLimit: 5,
-  })
+  const db = createDbPool({ connectionLimit: 5 })
 
   // phone_source 列が無い既存DBでも動くよう自動追加
   try {
