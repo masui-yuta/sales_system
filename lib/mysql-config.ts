@@ -4,7 +4,7 @@ import type { PoolOptions } from 'mysql2/promise'
 export function mysqlSslOptions():
   | { minVersion: 'TLSv1.2'; rejectUnauthorized: true }
   | undefined {
-  if (process.env.DB_SSL !== 'true') return undefined
+  if (process.env.DB_SSL?.trim().toLowerCase() !== 'true') return undefined
   return { minVersion: 'TLSv1.2', rejectUnauthorized: true }
 }
 
@@ -24,6 +24,8 @@ export function mysqlPoolConfig(
       process.env.NODE_ENV === 'production'
         ? Number(process.env.DB_CONNECTION_LIMIT || 3)
         : 10,
+    connectTimeout: 10000,
+    enableKeepAlive: true,
     ...(ssl ? { ssl } : {}),
     ...overrides,
   }

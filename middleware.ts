@@ -6,12 +6,19 @@ import {
   verifySessionCookie,
 } from '@/lib/auth/session-token'
 
-const PUBLIC_PATHS = ['/login']
+const PUBLIC_PATHS = ['/login', '/api/health']
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   const token = request.cookies.get(SESSION_COOKIE)?.value
-  const session = token ? await verifySessionCookie(token) : null
+  let session = null
+  if (token) {
+    try {
+      session = await verifySessionCookie(token)
+    } catch {
+      session = null
+    }
+  }
 
   if (PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
     if (session) {

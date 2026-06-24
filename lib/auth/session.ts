@@ -7,14 +7,18 @@ import {
 import { getValidSession, type AuthUser } from './users'
 
 export async function getSession(): Promise<AuthUser | null> {
-  const jar = await cookies()
-  const token = jar.get(SESSION_COOKIE)?.value
-  if (!token) return null
+  try {
+    const jar = await cookies()
+    const token = jar.get(SESSION_COOKIE)?.value
+    if (!token) return null
 
-  const payload = await verifySessionCookie(token)
-  if (!payload) return null
+    const payload = await verifySessionCookie(token)
+    if (!payload) return null
 
-  return getValidSession(payload)
+    return getValidSession(payload)
+  } catch {
+    return null
+  }
 }
 
 export async function requireSession(): Promise<AuthUser> {

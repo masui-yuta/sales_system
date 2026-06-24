@@ -42,16 +42,28 @@ export async function loginAction(
   const ip = getClientIp(headerStore)
   const userAgent = headerStore.get('user-agent')
 
-  const result = await authenticateUser(email, password, ip, userAgent)
-  if (!result.ok) {
-    return { error: result.error }
+  try {
+    const result = await authenticateUser(email, password, ip, userAgent)
+    if (!result.ok) {
+      return { error: result.error }
+    }
+
+    await setSessionCookie(result.cookieValue)
+
+    const dest =
+      from.startsWith('/') && !from.startsWith('/login') ? from : '/'
+    redirect(dest)
+  } catch (e) {
+    console.error('loginAction failed:', e)
+    const msg = e instanceof Error ? e.message : String(e)
+    if (msg.includes('AUTH_SECRET')) {
+      return { error: 'サーバー設定エラー: AUTH_SECRET が未設定です（Vercel の環境変数を確認）' }
+    }
+    if (/ECONNREFUSED|ETIMEDOUT|insecure transport|Access denied|ENOTFOUND/i.test(msg)) {
+      return { error: 'サーバー設定エラー: データベースに接続できません（DB_* と DB_SSL=true を確認）' }
+    }
+    return { error: `ログイン処理に失敗しました: ${msg}` }
   }
-
-  await setSessionCookie(result.cookieValue)
-
-  const dest =
-    from.startsWith('/') && !from.startsWith('/login') ? from : '/'
-  redirect(dest)
 }
 
 export async function logoutAction(): Promise<void> {
