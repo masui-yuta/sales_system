@@ -5,6 +5,7 @@ import {
   formatCapitalYen,
   formatEmployeeCount,
   normalizeExternalUrl,
+  capitalYenToManInput,
 } from '@/lib/format-company'
 import { updateCompany, addCallLog } from '../actions'
 
@@ -151,6 +152,11 @@ export default async function CompanyDetailPage({
             </div>
           </dl>
 
+          <p className="mt-4 text-xs text-gray-400 leading-relaxed">
+            資本金・従業員数・Webサイトは gBizINFO 登録企業のみ自動表示されます（大阪府42万社のうち約3%）。
+            未登録の場合は下のフォームから手動入力できます。
+          </p>
+
           {company.phone && (
             <a
               href={`tel:${company.phone}`}
@@ -191,6 +197,38 @@ export default async function CompanyDetailPage({
               name="industry"
               defaultValue={company.industry ?? ''}
               placeholder="不動産 / 建設 など"
+              className="w-full border rounded-xl p-2"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold text-gray-500 mb-1">
+              資本金（万円）
+            </label>
+            <input
+              type="number"
+              name="capitalMan"
+              min="0"
+              step="1"
+              defaultValue={capitalYenToManInput(company.capital_yen)}
+              placeholder="1000"
+              className="w-full border rounded-xl p-2"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold text-gray-500 mb-1">
+              従業員数（名）
+            </label>
+            <input
+              type="number"
+              name="employeeCount"
+              min="0"
+              step="1"
+              defaultValue={
+                company.employee_count != null ? String(company.employee_count) : ''
+              }
+              placeholder="50"
               className="w-full border rounded-xl p-2"
             />
           </div>

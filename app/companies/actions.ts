@@ -4,6 +4,10 @@ import type { RowDataPacket } from 'mysql2'
 import { revalidatePath } from 'next/cache'
 import { db } from '@/lib/db'
 import { requireSession } from '@/lib/auth/session'
+import {
+  parseCapitalManInput,
+  parseEmployeeCountInput,
+} from '@/lib/format-company'
 
 export async function updateCompany(formData: FormData) {
   await requireSession()
@@ -14,10 +18,17 @@ export async function updateCompany(formData: FormData) {
   const industry = (String(formData.get('industry') ?? '').trim()) || null
   const recruitUrl = (String(formData.get('recruitUrl') ?? '').trim()) || null
   const note = (String(formData.get('note') ?? '').trim()) || null
+  const capitalYen = parseCapitalManInput(String(formData.get('capitalMan') ?? ''))
+  const employeeCount = parseEmployeeCountInput(
+    String(formData.get('employeeCount') ?? ''),
+  )
 
   await db.query(
-    'UPDATE companies SET phone = ?, industry = ?, recruit_url = ?, note = ? WHERE id = ?',
-    [phone, industry, recruitUrl, note, id],
+    `UPDATE companies
+     SET phone = ?, industry = ?, recruit_url = ?, note = ?,
+         capital_yen = ?, employee_count = ?
+     WHERE id = ?`,
+    [phone, industry, recruitUrl, note, capitalYen, employeeCount, id],
   )
 
   revalidatePath(`/companies/${id}`)
