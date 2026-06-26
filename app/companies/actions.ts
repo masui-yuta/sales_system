@@ -12,11 +12,12 @@ export async function updateCompany(formData: FormData) {
 
   const phone = (String(formData.get('phone') ?? '').trim()) || null
   const industry = (String(formData.get('industry') ?? '').trim()) || null
+  const recruitUrl = (String(formData.get('recruitUrl') ?? '').trim()) || null
   const note = (String(formData.get('note') ?? '').trim()) || null
 
   await db.query(
-    'UPDATE companies SET phone = ?, industry = ?, note = ? WHERE id = ?',
-    [phone, industry, note, id],
+    'UPDATE companies SET phone = ?, industry = ?, recruit_url = ?, note = ? WHERE id = ?',
+    [phone, industry, recruitUrl, note, id],
   )
 
   revalidatePath(`/companies/${id}`)

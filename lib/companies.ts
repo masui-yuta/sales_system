@@ -15,6 +15,10 @@ export type Company = {
   post_code: string | null
   phone: string | null
   industry: string | null
+  capital_yen: number | null
+  employee_count: number | null
+  website_url: string | null
+  recruit_url: string | null
   source: string | null
   note: string | null
   call_count: number
@@ -233,7 +237,8 @@ export async function getCompanyById(id: number): Promise<Company | null> {
   const sql = `
     SELECT
       id, corporate_number, name, prefecture, city, address,
-      post_code, phone, industry, source, note, call_count
+      post_code, phone, industry, capital_yen, employee_count,
+      website_url, recruit_url, source, note, call_count
     FROM companies
     WHERE id = ?
     LIMIT 1

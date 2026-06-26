@@ -1,6 +1,11 @@
 import Link from 'next/link'
 import Header from '@/components/Header'
 import { getCompanyById, getCallLogs, CALL_RESULTS } from '@/lib/companies'
+import {
+  formatCapitalYen,
+  formatEmployeeCount,
+  normalizeExternalUrl,
+} from '@/lib/format-company'
 import { updateCompany, addCallLog } from '../actions'
 
 export default async function CompanyDetailPage({
@@ -22,6 +27,13 @@ export default async function CompanyDetailPage({
   }
 
   const callLogs = await getCallLogs(companyId)
+  const capitalLabel = formatCapitalYen(company.capital_yen)
+  const employeeLabel = formatEmployeeCount(company.employee_count)
+  const websiteUrl = normalizeExternalUrl(company.website_url)
+  const recruitUrl = normalizeExternalUrl(company.recruit_url)
+  const jobSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(
+    `${company.name} 採用`,
+  )}`
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -82,6 +94,61 @@ export default async function CompanyDetailPage({
               <dt className="font-bold text-gray-500">業種</dt>
               <dd>{company.industry || <span className="text-gray-400">未分類</span>}</dd>
             </div>
+            <div>
+              <dt className="font-bold text-gray-500">資本金</dt>
+              <dd>
+                {capitalLabel ?? <span className="text-gray-400">未登録</span>}
+              </dd>
+            </div>
+            <div>
+              <dt className="font-bold text-gray-500">従業員数</dt>
+              <dd>
+                {employeeLabel ?? <span className="text-gray-400">未登録</span>}
+              </dd>
+            </div>
+            <div>
+              <dt className="font-bold text-gray-500">Webサイト</dt>
+              <dd>
+                {websiteUrl ? (
+                  <a
+                    href={websiteUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline break-all"
+                  >
+                    {websiteUrl}
+                  </a>
+                ) : (
+                  <span className="text-gray-400">未登録</span>
+                )}
+              </dd>
+            </div>
+            <div>
+              <dt className="font-bold text-gray-500">採用ページ</dt>
+              <dd>
+                {recruitUrl ? (
+                  <a
+                    href={recruitUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline break-all"
+                  >
+                    {recruitUrl}
+                  </a>
+                ) : (
+                  <span className="text-gray-400">未登録</span>
+                )}
+                {' · '}
+                <a
+                  href={jobSearchUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline"
+                >
+                  求人を検索
+                </a>
+              </dd>
+            </div>
           </dl>
 
           {company.phone && (
@@ -124,6 +191,19 @@ export default async function CompanyDetailPage({
               name="industry"
               defaultValue={company.industry ?? ''}
               placeholder="不動産 / 建設 など"
+              className="w-full border rounded-xl p-2"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold text-gray-500 mb-1">
+              採用ページ URL
+            </label>
+            <input
+              type="url"
+              name="recruitUrl"
+              defaultValue={company.recruit_url ?? ''}
+              placeholder="https://example.co.jp/recruit"
               className="w-full border rounded-xl p-2"
             />
           </div>

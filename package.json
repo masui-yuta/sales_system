@@ -15,6 +15,8 @@
     "db:migrate-auth": "node scripts/migrate-auth.mjs",
     "db:create-user": "node scripts/create-user.mjs",
     "db:normalize-industry": "node scripts/normalize-industry.mjs",
+    "db:migrate-company-profile": "node scripts/migrate-company-profile.mjs",
+    "db:import-gbizinfo-profile": "node scripts/import-gbizinfo-profile.mjs",
     "db:setup-remote": "node scripts/setup-remote-db.mjs"
   },
   "dependencies": {

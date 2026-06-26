@@ -19,6 +19,10 @@ CREATE TABLE IF NOT EXISTS companies (
   phone            VARCHAR(20)  NULL,                      -- 電話番号（補完対象）
   phone_source     VARCHAR(30)  NULL,                      -- 電話番号の出所（osm / manual 等）
   industry         VARCHAR(255) NULL,                      -- 業種（日本標準産業分類コード+名称 / 手動）
+  capital_yen      BIGINT UNSIGNED NULL,                  -- 資本金（円・gBizINFO）
+  employee_count   INT UNSIGNED NULL,                     -- 従業員数（gBizINFO）
+  website_url      VARCHAR(512) NULL,                     -- 企業Webサイト（gBizINFO）
+  recruit_url      VARCHAR(512) NULL,                     -- 採用ページURL（手動）
   source           VARCHAR(30)  NULL,                      -- データ出所（kokuzeicho / osm / manual / salesnow 等）
   note             TEXT         NULL,                      -- 担当者メモ
   call_count       INT UNSIGNED NOT NULL DEFAULT 0,       -- 架電回数（一覧高速化用・call_logs と同期）
