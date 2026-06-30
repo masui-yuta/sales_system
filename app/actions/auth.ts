@@ -42,17 +42,9 @@ export async function loginAction(
   const ip = getClientIp(headerStore)
   const userAgent = headerStore.get('user-agent')
 
+  let result
   try {
-    const result = await authenticateUser(email, password, ip, userAgent)
-    if (!result.ok) {
-      return { error: result.error }
-    }
-
-    await setSessionCookie(result.cookieValue)
-
-    const dest =
-      from.startsWith('/') && !from.startsWith('/login') ? from : '/'
-    redirect(dest)
+    result = await authenticateUser(email, password, ip, userAgent)
   } catch (e) {
     console.error('loginAction failed:', e)
     const msg = e instanceof Error ? e.message : String(e)
@@ -64,6 +56,16 @@ export async function loginAction(
     }
     return { error: `ログイン処理に失敗しました: ${msg}` }
   }
+
+  if (!result.ok) {
+    return { error: result.error }
+  }
+
+  await setSessionCookie(result.cookieValue)
+
+  const dest =
+    from.startsWith('/') && !from.startsWith('/login') ? from : '/'
+  redirect(dest)
 }
 
 export async function logoutAction(): Promise<void> {
